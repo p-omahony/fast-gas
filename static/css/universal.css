@@ -2,7 +2,43 @@ body {
     padding: 0;
     margin: 0;
 }
-html, body, #map {
+html, body {
     height: 100%;
     width: 100vw;
+}
+
+#content{
+    height: 100%;
+    width: 100vw;
+    display: flex;
+}
+
+#map{
+    height: 100%;
+    width: 80%;
+}
+#sidebar{
+    height: 100%;
+    width: 20%;
+    justify-content: center;
+    align-items: center;
+    background-color: #303030;
+    position: relative;
+}
+#form{
+    width: 90%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.form-select{
+    color: white !important;
+    background-color: #303030 !important;
+    margin-bottom: 1em;
+}
+
+.btn{
+    color: white !important;
 }
