@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Flask Leaflet Website</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/universal.css') }}" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+crossorigin=""/>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+crossorigin=""></script>
+</head>
+<body>
+
+<div id="content">
+    <!-- we create the left side bar -->
+    <div id="sidebar">
+        <!-- we create the form -->
+        <form method="POST">
+            <!-- gas select -->
+            <select name='gas' class="form-select" aria-label="Default select example">
+                <option value=none selected>Carburant</option>
+                <option value="SP98">SP98</option>
+                <option value="SP95">SP95</option>
+                <option value="Gazole">Gazole</option>
+            </select>
+            <!-- car model select -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Véhicule</button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div role="separator" class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                    </div>
+                </div>
+                <input name="car" type="text" class="form-control" aria-label="Text input with dropdown button">
+            </div>
+            <!-- distance select  -->
+            <label id="range_label" for="customRange3" class="form-label">Distance maximale: 50</label>
+            <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" onchange="updateRangeLabel(this.value)">
+            <select onchange="updateLocationType(this.value)" class="form-select" aria-label="Default select example">
+                <option value="current" selected>Utiliser ma localisation</option>
+                <option value="address">Entrer une autre adresse</option>
+            </select>
+            <!-- address select/input  -->
+            <div id="form_address">
+                <div id="input_address" class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Adresse</span>
+                    </div>
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+                <div id="input_cp" class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Code postal</span>
+                    </div>
+                    <input name="cp" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+            </div>
+            <!-- hidden element to get current location  -->
+            <input type="hidden" name="location" id="hidden_location">
+            <button type="submit" id="submit" class="btn btn-link">Rechercher</button>
+        </form>
+    </div>
+    <div id="map"></div>
+</div>
+<script src="{{ url_for('static', filename='js/universal.js') }}" /></script>
+
+<script>
+    // we get the current location of the user when loading the webpage 
+    var x = document.getElementById("demo");
+    function getFirstLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function getPosition(position) {
+        console.log(position.coords.latitude);
+        document.getElementById('hidden_location').value = [position.coords.latitude, position.coords.longitude];
+    }
+    getFirstLocation();
+</script>
+
+<script>
+    var x = document.getElementById("demo");
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        L.marker([ position.coords.latitude,  position.coords.longitude]).addTo(map)
+    .bindPopup("Vous êtes ici !")
+    .openPopup();
+    }
+    getLocation();
+
+    var range_label = document.getElementById('range_label');
+    function updateRangeLabel(val){
+        range_label.innerHTML = 'Distance maximale: ' + val;
+
+    }
+
+    // we change the left side bar relatively to the value of the location type select 
+    // if 'Entrer une autre adresse' is selected we display two more inputs fields 
+    var input_address = document.getElementById('form_address')
+    function updateLocationType(val){
+        if (val=='address'){
+            input_address.style.display = "block";
+        }else{
+            input_address.style.display = "none";
+            document.getElementById('hidden_location').value = 'test';
+        }
+    }
+</script>
+
+<script>
+    // we get all the data we passed in the app.py file and display it on the map 
+    {% for marker in markers %}
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
+    .bindPopup("{{ marker['popup'] }}")
+    .openPopup();
+    {% endfor %}
+</script>
+</body>
+</html>
