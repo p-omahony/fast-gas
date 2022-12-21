@@ -47,7 +47,7 @@ crossorigin=""></script>
             </div>
             <!-- distance select  -->
             <label id="range_label" for="customRange3" class="form-label">Distance maximale: 50</label>
-            <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" onchange="updateRangeLabel(this.value)">
+            <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" oninput="updateRangeLabel(this.value)">
             <select onchange="updateLocationType(this.value)" class="form-select" aria-label="Default select example">
                 <option value="current" selected>Utiliser ma localisation</option>
                 <option value="address">Entrer une autre adresse</option>
