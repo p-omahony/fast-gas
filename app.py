@@ -1,9 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app=Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=('GET', 'POST'))
 def root():
+   if request.method == 'POST':
+      gas = request.form['gas']
+      location = request.form['location']
+      cp = request.form['cp']
+      distance = request.form['distance']
+      car = request.form['car']
    markers=[
    {
     'lat':48.71108385372915,

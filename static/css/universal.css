@@ -25,7 +25,7 @@ html, body {
     background-color: #303030;
     position: relative;
 }
-#form{
+form{
     width: 90%;
     position: absolute;
     left: 50%;
@@ -39,6 +39,35 @@ html, body {
     margin-bottom: 1em;
 }
 
+.form-select:hover{
+    background-color: #636d6e !important;
+}
+
 .btn{
     color: white !important;
+    border-color: white !important;
+    text-decoration: none !important;
+    width: 100%;
+}
+#range_label{
+    color: white;
+}
+#submit:hover{
+    background-color: #087523;
+}
+
+select, button:hover{
+    cursor: pointer;
+}
+
+#form_address{
+    display: none;
+}
+#basic-url{
+    border: white !important;
+    border-radius: 0.2em !important;
+}
+#basic-addon3{
+    background-color: #303030;
+    color: white;
 }

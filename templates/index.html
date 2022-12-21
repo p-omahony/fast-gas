@@ -21,9 +21,9 @@ crossorigin=""></script>
 
 <div id="content">
     <div id="sidebar">
-        <div id="form">
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Carburant</option>
+        <form method="POST">
+            <select name='gas' class="form-select" aria-label="Default select example">
+                <option value=none selected>Carburant</option>
                 <option value="SP98">SP98</option>
                 <option value="SP95">SP95</option>
                 <option value="Gazole">Gazole</option>
@@ -39,15 +39,51 @@ crossorigin=""></script>
                     <a class="dropdown-item" href="#">Separated link</a>
                     </div>
                 </div>
-                <input type="text" class="form-control" aria-label="Text input with dropdown button">
+                <input name="car" type="text" class="form-control" aria-label="Text input with dropdown button">
             </div>
-            <button onclick="getLocation()" type="button" class="btn btn-link">Utiliser ma localisation</button>
-            <p id="demo"></p>
-        </div>
+            <label id="range_label" for="customRange3" class="form-label">Distance maximale: 50</label>
+            <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" onchange="updateRangeLabel(this.value)">
+            <select onchange="updateLocationType(this.value)" class="form-select" aria-label="Default select example">
+                <option value="current" selected>Utiliser ma localisation</option>
+                <option value="address">Entrer une autre adresse</option>
+            </select>
+            <div id="form_address">
+                <div id="input_address" class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Adresse</span>
+                    </div>
+                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+                <div id="input_cp" class="input-group mb-3">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Code postal</span>
+                    </div>
+                    <input name="cp" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+            </div>
+            <input type="hidden" name="location" id="hidden_location">
+            <button type="submit" id="submit" class="btn btn-link">Rechercher</button>
+        </form>
     </div>
     <div id="map"></div>
 </div>
 <script src="{{ url_for('static', filename='js/universal.js') }}" /></script>
+
+<script>
+    var x = document.getElementById("demo");
+    function getFirstLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function getPosition(position) {
+        console.log(position.coords.latitude);
+        document.getElementById('hidden_location').value = [position.coords.latitude, position.coords.longitude];
+    }
+    getFirstLocation();
+</script>
 
 <script>
     var x = document.getElementById("demo");
@@ -56,14 +92,30 @@ crossorigin=""></script>
             navigator.geolocation.getCurrentPosition(showPosition);
         } else {
             x.innerHTML = "Geolocation is not supported by this browser.";
+        }
     }
     function showPosition(position) {
         L.marker([ position.coords.latitude,  position.coords.longitude]).addTo(map)
     .bindPopup("Vous êtes ici !")
     .openPopup();
     }
+    getLocation();
 
-}
+    var range_label = document.getElementById('range_label');
+    function updateRangeLabel(val){
+        range_label.innerHTML = 'Distance maximale: ' + val;
+
+    }
+
+    var input_address = document.getElementById('form_address')
+    function updateLocationType(val){
+        if (val=='address'){
+            input_address.style.display = "block";
+        }else{
+            input_address.style.display = "none";
+            document.getElementById('hidden_location').value = 'test';
+        }
+    }
 </script>
 
 <script>
