@@ -20,14 +20,18 @@ crossorigin=""></script>
 <body>
 
 <div id="content">
+    <!-- we create the left side bar -->
     <div id="sidebar">
+        <!-- we create the form -->
         <form method="POST">
+            <!-- gas select -->
             <select name='gas' class="form-select" aria-label="Default select example">
                 <option value=none selected>Carburant</option>
                 <option value="SP98">SP98</option>
                 <option value="SP95">SP95</option>
                 <option value="Gazole">Gazole</option>
             </select>
+            <!-- car model select -->
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Véhicule</button>
@@ -41,12 +45,14 @@ crossorigin=""></script>
                 </div>
                 <input name="car" type="text" class="form-control" aria-label="Text input with dropdown button">
             </div>
+            <!-- distance select  -->
             <label id="range_label" for="customRange3" class="form-label">Distance maximale: 50</label>
             <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" onchange="updateRangeLabel(this.value)">
             <select onchange="updateLocationType(this.value)" class="form-select" aria-label="Default select example">
                 <option value="current" selected>Utiliser ma localisation</option>
                 <option value="address">Entrer une autre adresse</option>
             </select>
+            <!-- address select/input  -->
             <div id="form_address">
                 <div id="input_address" class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -61,6 +67,7 @@ crossorigin=""></script>
                     <input name="cp" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                 </div>
             </div>
+            <!-- hidden element to get current location  -->
             <input type="hidden" name="location" id="hidden_location">
             <button type="submit" id="submit" class="btn btn-link">Rechercher</button>
         </form>
@@ -70,6 +77,7 @@ crossorigin=""></script>
 <script src="{{ url_for('static', filename='js/universal.js') }}" /></script>
 
 <script>
+    // we get the current location of the user when loading the webpage 
     var x = document.getElementById("demo");
     function getFirstLocation() {
         if (navigator.geolocation) {
@@ -107,6 +115,8 @@ crossorigin=""></script>
 
     }
 
+    // we change the left side bar relatively to the value of the location type select 
+    // if 'Entrer une autre adresse' is selected we display two more inputs fields 
     var input_address = document.getElementById('form_address')
     function updateLocationType(val){
         if (val=='address'){
@@ -119,6 +129,7 @@ crossorigin=""></script>
 </script>
 
 <script>
+    // we get all the data we passed in the app.py file and display it on the map 
     {% for marker in markers %}
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
     .bindPopup("{{ marker['popup'] }}")

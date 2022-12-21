@@ -4,6 +4,7 @@ app=Flask(__name__)
 
 @app.route('/', methods=('GET', 'POST'))
 def root():
+   #we retrieve the data entered by the user in the form
    if request.method == 'POST':
       gas = request.form['gas']
       location = request.form['location']
@@ -17,6 +18,7 @@ def root():
     'popup':'ENSAE'
     }
    ]
+   # we pass the data to the template (html file)
    return render_template('index.html',markers=markers )
 
 if __name__ == '__main__':
