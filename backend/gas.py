@@ -58,7 +58,27 @@ class GasStation:
         return self.coords == __o.coords
 
 
-
+def generate_gas_stations(data):
+    #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
+    gas_stations = []
+    for r in data:
+        fields = r['fields']
+        #some values can be missing
+        try:
+            prix_nom = fields['prix_nom']
+            prix_valeur = fields['prix_valeur']
+        except:
+            prix_nom = "Nous disposons pas d'information"
+            prix_valeur = None
+        gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)])
+        #if the gas station does not exist we create it
+        if  gas_station not in gas_stations:
+            gas_stations.append(gas_station)
+        #else we had a Gas object to the GasStation.fuels variable
+        else : 
+            id = [i for i,x in enumerate(gas_stations) if x == gas_station][0]
+            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur']))
+    return gas_stations
 
 if __name__ == '__main__' :
     
