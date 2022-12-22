@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from backend.gas import GasDriver, generate_gas_stations
+from operator import attrgetter
 
 app=Flask(__name__)
 
@@ -27,12 +28,28 @@ def root():
       gas_stations = generate_gas_stations(data)
 
       #we create markers for each gas station
+      closest_gs = min(gas_stations, key=attrgetter('dist_from_loc'))
+      min_price = 1500
+      for gs in gas_stations:
+         for fuel in gs.fuels:
+            if fuel.prix is not None:
+               if fuel.prix<min_price:
+                  min_price = fuel.prix
+                  cheaper_gs = gs
+
       for gs in gas_stations :
          marker = {
             'lat': gs.coords.latitude,
             'lon': gs.coords.longitude,
-            'popup': ', '.join([f.name + ': ' + str(f.prix) + 'euros' for f in gs.fuels])
+            'popup': ', '.join([f.name + ': ' + str(f.prix) + 'euros' for f in gs.fuels]),
          }
+         if gs == cheaper_gs:
+            marker['color'] = 'green'
+         elif gs == closest_gs:
+            marker['color'] = 'yellow'
+         else:
+            marker['color'] = 'blue'
+         
          markers.append(marker)
       
    # we pass the data to the template (html file)

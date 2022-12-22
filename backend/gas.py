@@ -52,6 +52,7 @@ class GasStation:
     cp: str
     coords: Point
     fuels: List[Gas]
+    dist_from_loc: float
 
     def __eq__(self, __o: object) -> bool:
         """Method to set two GasStation objects equals only if their coordinates are equal"""
@@ -70,7 +71,7 @@ def generate_gas_stations(data):
         except:
             prix_nom = "Nous disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)])
+        gas_station = GasStation(fields['adresse'], fields['cp'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=float(fields['dist']))
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)
@@ -99,7 +100,7 @@ if __name__ == '__main__' :
         except:
             prix_nom = "Nous disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)])
+        gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=fields['dist'])
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)
