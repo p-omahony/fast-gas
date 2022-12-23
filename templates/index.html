@@ -58,7 +58,7 @@ crossorigin=""></script>
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">Adresse</span>
                     </div>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                    <input name="address" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                 </div>
                 <div id="input_cp" class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -151,7 +151,7 @@ crossorigin=""></script>
     });
 
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], {icon: Icon}).addTo(map)
-    .bindPopup("{{ marker['popup'] }}")
+    .bindPopup("{{ marker['popup'] }} <br> <a href={{ marker['maps_link'] }}>Y aller</a>")
     .openPopup();
     {% endfor %}
 </script>

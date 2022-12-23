@@ -23,6 +23,7 @@ class GasDriver:
                 query += '&refine.%s'%f
         if all(i is not None for i in distance_from_point):
             query += '&geofilter.distance=' + distance_from_point[0] + '%2C' + distance_from_point[1] +  '%2C' + distance_from_point[2]
+        query += '&rows=100'
         r = requests.get(query)
         res = r.json()
         return res['records']
@@ -87,9 +88,10 @@ if __name__ == '__main__' :
     driver = GasDriver()
 
     #get raw data
-    data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=['ville=Paris'], distance_from_point=("48.8520930694", "2.34738897685", "10000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
+    data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=[], distance_from_point=("48.8693548", "2.3450405", "1000000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
     
     #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
+    print(len(data))
     gas_stations = []
     for r in data:
         fields = r['fields']
@@ -110,4 +112,4 @@ if __name__ == '__main__' :
             gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur']))
 
 
-    print(gas_stations)
+    print(len(gas_stations))
