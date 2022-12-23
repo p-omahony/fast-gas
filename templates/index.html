@@ -58,7 +58,7 @@ crossorigin=""></script>
                     <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">Adresse</span>
                     </div>
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                    <input name="address" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                 </div>
                 <div id="input_cp" class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -95,6 +95,15 @@ crossorigin=""></script>
 
 <script>
     var x = document.getElementById("demo");
+    var IconCP = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + 'red' + '.png' ,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -103,7 +112,7 @@ crossorigin=""></script>
         }
     }
     function showPosition(position) {
-        L.marker([ position.coords.latitude,  position.coords.longitude]).addTo(map)
+        L.marker([ position.coords.latitude,  position.coords.longitude], {icon: IconCP}).addTo(map)
     .bindPopup("Vous êtes ici !")
     .openPopup();
     }
@@ -131,8 +140,18 @@ crossorigin=""></script>
 <script>
     // we get all the data we passed in the app.py file and display it on the map 
     {% for marker in markers %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
-    .bindPopup("{{ marker['popup'] }}")
+    var color = "{{ marker['color'] }}";
+    var Icon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + color + '.png' ,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], {icon: Icon}).addTo(map)
+    .bindPopup("{{ marker['popup'] }} <br> <a href={{ marker['maps_link'] }}>Y aller</a>")
     .openPopup();
     {% endfor %}
 </script>
