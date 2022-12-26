@@ -28,26 +28,6 @@ class GasDriver:
         res = r.json()
         return res['records']
 
-class CarLabelling:
-    def __init__(self) -> None:
-        self.url = "https://data.ademe.fr/data-fair/api/v1/datasets/ademe-car-labelling/full"
-    
-    def get_data(self) -> list :
-        return (pd.read_csv( self.url,sep=";"))
-
-    def choose_marque(self)-> list :
-        Marque = self.get_data(self.url)
-        Marque=Marque['Marque'].unique()
-        return (Marque)
-
-    def choose_modele (self, choix)-> List :
-        liste_modele=[]
-        Marque = self.choose_marque(choix)
-        for i in choix:
-            if (choix['Marque'][i]==Marque):
-                liste_modele.append(choix['Libellé modèle'])
-        return (liste_modele)
-
 
 @dataclass
 class Point:
