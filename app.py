@@ -43,13 +43,15 @@ def root():
       gas_stations = generate_gas_stations(data)
 
       #we create markers for each gas station
-      closest_gs = min(gas_stations, key=attrgetter('dist_from_loc'))
+      closest_gs = min(gas_stations, key=attrgetter('dist_from_loc')) #reprend ici et copie sans mes lignes avec le fuirtherst pou rla dist
+      furthest_gs= 1000 # distance out of range that way for first iteration it is for sure lower
       min_price = 1500
       for gs in gas_stations:
          for fuel in gs.fuels:
             if fuel.prix is not None:
-               if fuel.prix<min_price:
+               if fuel.prix<min_price*1.02 and gs.dist_from_loc<furthest_gs*0.95 or fuel.prix<min_price*0.99 and gs.dist_from_loc<furthest_gs*1.1 :
                   min_price = fuel.prix
+                  furthest_gs=gs.dist_from_loc
                   cheaper_gs = gs
 
       for gs in gas_stations :
