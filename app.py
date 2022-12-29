@@ -75,7 +75,7 @@ def root():
          marker = {
             'lat': gs.coords.latitude,
             'lon': gs.coords.longitude,
-            'popup': ', '.join([f.name + ': ' + str(f.prix) + 'euros' for f in gs.fuels]),
+            'popup': ', '.join([f.name + ': ' + str(f.prix) + 'euros ' + '(as of ' + str(f.maj)[:10] + ')' for f in gs.fuels]) + ', Automate 24-24: ' + gs.horaires_automate_24_24,
             'maps_link': gmaps_link
          }
          if gs == cheaper_gs: #if a marker doesn't appear, it is because it is combined with another one (the order of the if conditions maters!)

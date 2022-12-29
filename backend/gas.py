@@ -20,7 +20,7 @@ class GasDriver:
             for facet in facets:
                 query += '&facet=%s'%facet
         if len(filters)!=0:
-            carburants=('prix_nom=SP98','prix_nom=SP95','prix_nom=Gazole','prix_nom=E10','prix_nom=E85','prix_nom=GPLc')
+            carburants=['prix_nom=SP98','prix_nom=SP95','prix_nom=Gazole','prix_nom=E10','prix_nom=E85','prix_nom=GPLc']
             for f in carburants :
                 if f not in filters :
                     query += '&exclude.%s'%f
@@ -45,12 +45,13 @@ class Point:
 @dataclass
 class Gas:
     """
-    Class for keeping track of a gaz
+    Class for keeping track of gas
         - The price of gas changes depending on the gas station
-        - We decide to diferentiate two of this object with the name and the price
+        - We decide to diferentiate it according to its name, its price and the latter one's last updated date
     """
     name: str
     prix: float
+    maj: str
 
 @dataclass
 class GasStation:
@@ -76,17 +77,19 @@ def generate_gas_stations(data):
         try:
             prix_nom = fields['prix_nom']
             prix_valeur = fields['prix_valeur']
+            prix_maj = fields['prix_maj']
         except:
             prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=float(fields['dist']))
+            prix_maj = None
+        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur, prix_maj)], dist_from_loc=float(fields['dist']))
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)
         #else we had a Gas object to the GasStation.fuels variable
         else : 
             id = [i for i,x in enumerate(gas_stations) if x == gas_station][0]
-            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur']))
+            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur'], fields['prix_maj']))
     return gas_stations
 
 if __name__ == '__main__' :
@@ -106,17 +109,19 @@ if __name__ == '__main__' :
         try:
             prix_nom = fields['prix_nom']
             prix_valeur = fields['prix_valeur']
+            prix_maj = fields['prix_maj']
         except:
             prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=fields['dist'])
+            prix_maj = None
+        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur, prix_maj)], dist_from_loc=fields['dist'])
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)
         #else we had a Gas object to the GasStation.fuels variable
         else : 
             id = [i for i,x in enumerate(gas_stations) if x == gas_station][0]
-            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur']))
+            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur'], fields['prix_maj']))
 
 
     print(len(gas_stations))
