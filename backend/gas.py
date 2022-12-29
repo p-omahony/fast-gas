@@ -7,12 +7,13 @@ class GasDriver:
     def __init__(self) -> None:
         self.url = 'https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie'
 
-    def get_data(self, facets: list = [], filters: list = [], distance_from_point: tuple = (None, None, None)) -> list:
+    def get_data(self, facets: list = [], filters: list = [], automates: list = [], distance_from_point: tuple = (None, None, None)) -> list:
         """
         Method to query data to the API
             - facets: list -> list of the features we want to aggregate the results (equivalent og GROUP BY in SQL)
             - filters: list -> list of the filters we want to apply to our query
-            - distance_from_point:tuple -> (latitude: string, longitude: string, distance: float) to get data within the 'distance' from point ('latitude', 'longitude') 
+            - distance_from_point:tuple -> (latitude: string, longitude: string, distance: float) to get data within the 'distance' from point ('latitude', 'longitude')
+            - automates -> yes and/or no for presence of automates in the gas station (another set of filters)
         """
         query = self.url + '&q='
         if len(facets)!=0:
@@ -23,6 +24,9 @@ class GasDriver:
             for f in carburants :
                 if f not in filters :
                     query += '&exclude.%s'%f
+        if len(automates)!=0:
+            for a in automates:
+                query += '&refine.%s'%a
         if all(i is not None for i in distance_from_point):
             query += '&geofilter.distance=' + distance_from_point[0] + '%2C' + distance_from_point[1] +  '%2C' + distance_from_point[2]
         query += '&rows=100'
@@ -53,6 +57,7 @@ class GasStation:
     """Class for keeping track of a gas station and all the fuels it sells"""
     address: str
     cp: str
+    horaires_automate_24_24: str
     coords: Point
     fuels: List[Gas]
     dist_from_loc: float
@@ -74,7 +79,7 @@ def generate_gas_stations(data):
         except:
             prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=float(fields['dist']))
+        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=float(fields['dist']))
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)
@@ -90,7 +95,7 @@ if __name__ == '__main__' :
     driver = GasDriver()
 
     #get raw data
-    data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=[], distance_from_point=("48.8693548", "2.3450405", "1000000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
+    data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=[], automates=[], distance_from_point=("48.8693548", "2.3450405", "1000000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
 
     #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
     print(len(data))
@@ -104,7 +109,7 @@ if __name__ == '__main__' :
         except:
             prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=fields['dist'])
+        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=fields['dist'])
         #if the gas station does not exist we create it
         if  gas_station not in gas_stations:
             gas_stations.append(gas_station)

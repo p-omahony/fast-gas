@@ -34,6 +34,12 @@ crossorigin=""></script>
                 <option value="E85">E85</option>
                 <option value="GPLc">GPLc</option>
             </select>
+            <!-- automate 24-24 : oui/non -->
+            <select name='automate' class = "form-select">
+                <option value=none selected> Presence automate</option>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+            </select>
             <!-- distance select  -->
             <label id="range_label" for="customRange3" class="form-label">Distance maximale: 25</label>
             <input name="distance" type="range" id="range" class="form-range" min="0" max="50" default="25" step="1" id="customRange3" oninput="updateRangeLabel(this.value)">

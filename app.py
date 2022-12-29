@@ -11,6 +11,7 @@ def root():
    #we retrieve the data entered by the user in the form
    markers = []
    filters = []
+   automates = []
    if request.method == 'POST':
       gas = request.form.getlist('gas[]')
       location = request.form['location'].split(',')
@@ -18,6 +19,7 @@ def root():
       cp = request.form['cp']
       address = request.form['address']
       distance = str(float(request.form['distance'])*1000)
+      horaires_automate_24_24 = request.form['automate']
 
       if address != '':
          address += ', %s'%cp
@@ -34,11 +36,14 @@ def root():
       if gas != 'none':
          for i in range(len(gas)):
             filters.append('prix_nom=%s'%gas[i])
+      
+      if horaires_automate_24_24 != 'none':
+         automates.append('horaires_automate_24_24=%s'%horaires_automate_24_24)
 
       # create a driver that connects to the API
       driver = GasDriver()
       #get raw data
-      data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=filters, distance_from_point=(latitude, longitude, distance))
+      data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=filters, automates=automates, distance_from_point=(latitude, longitude, distance))
       #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
       gas_stations = generate_gas_stations(data)
 
