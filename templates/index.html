@@ -25,20 +25,7 @@ crossorigin=""></script>
         <!-- we create the form -->
         <form method="POST">
             <!-- gas select -->
-            <div class="form-group">
-                <div>
-                  <select id="selected_gas" name='gas' multiple class="form-control">
-                    <option value=none selected>Carburant</option>
-                    <option value="SP98">SP98</option>
-                    <option value="SP95">SP95</option>
-                    <option value="Gazole">Gazole</option>
-                    <option value="E10">E10</option>
-                    <option value="E85">E85</option>
-                    <option value="GPLc">GPLc</option>
-                  </select>
-                </div>
-              </div>
-            <!-- <select name='gas' multiple="yes" class="form-select" aria-label="multiple select example">
+            <select name='gas[]' multiple="yes" class="form-select" aria-label="multiple select example">
                 <option value=none selected>Carburant</option>
                 <option value="SP98">SP98</option>
                 <option value="SP95">SP95</option>
@@ -46,7 +33,7 @@ crossorigin=""></script>
                 <option value="E10">E10</option>
                 <option value="E85">E85</option>
                 <option value="GPLc">GPLc</option>
-            </select> -->
+            </select>
             <!-- car model select -->
             <div class="input-group mb-3">
                 <div class="input-group-prepend">

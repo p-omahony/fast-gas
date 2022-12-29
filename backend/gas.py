@@ -89,7 +89,7 @@ if __name__ == '__main__' :
 
     #get raw data
     data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=[], distance_from_point=("48.8693548", "2.3450405", "1000000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
-    
+
     #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
     print(len(data))
     gas_stations = []

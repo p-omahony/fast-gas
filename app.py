@@ -11,9 +11,7 @@ def root():
    markers = []
    filters = []
    if request.method == 'POST':
-      gas = request.form.getlist('selected_gas')
-      print(gas)
-      #gas = request.form['gas']
+      gas = request.form.getlist('gas[]')
       location = request.form['location'].split(',')
       latitude, longitude = location[0], location[1]
       cp = request.form['cp']
@@ -34,7 +32,8 @@ def root():
          markers.append(marker)
 
       if gas != 'none':
-         filters.append('prix_nom=%s'%gas)
+         for i in range(len(gas)):
+            filters.append('prix_nom=%s'%gas[i])
 
       # create a driver that connects to the API
       driver = GasDriver()
