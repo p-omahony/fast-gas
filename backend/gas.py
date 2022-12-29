@@ -19,8 +19,10 @@ class GasDriver:
             for facet in facets:
                 query += '&facet=%s'%facet
         if len(filters)!=0:
-            for f in filters :
-                query += '&refine.%s'%f
+            carburants=('prix_nom=Gazole','prix_nom=SP98','prix_nom=E10','prix_nom=SP95','prix_nom=E85','prix_nom=GPLc')
+            for f in carburants :
+                if f not in filters :
+                    query += '&exclude.%s'%f
         if all(i is not None for i in distance_from_point):
             query += '&geofilter.distance=' + distance_from_point[0] + '%2C' + distance_from_point[1] +  '%2C' + distance_from_point[2]
         query += '&rows=100'
