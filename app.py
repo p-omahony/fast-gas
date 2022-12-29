@@ -11,7 +11,9 @@ def root():
    markers = []
    filters = []
    if request.method == 'POST':
-      gas = request.form['gas']
+      gas = request.form.getlist('selected_gas')
+      print(gas)
+      #gas = request.form['gas']
       location = request.form['location'].split(',')
       latitude, longitude = location[0], location[1]
       cp = request.form['cp']
@@ -73,4 +75,4 @@ def root():
    return render_template('index.html',markers=markers )
 
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=8080, debug=True)
+   app.run(host='127.0.0.1', port=8080, debug=True)

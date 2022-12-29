@@ -48,7 +48,7 @@ class Gas:
 
 @dataclass
 class GasStation:
-    """Class for keeping track of a gas stations and all the fuels they sell"""
+    """Class for keeping track of a gas station and all the fuels it sells"""
     address: str
     cp: str
     coords: Point
@@ -70,7 +70,7 @@ def generate_gas_stations(data):
             prix_nom = fields['prix_nom']
             prix_valeur = fields['prix_valeur']
         except:
-            prix_nom = "Nous disposons pas d'information"
+            prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
         gas_station = GasStation(fields['adresse'], fields['cp'], coords=Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=float(fields['dist']))
         #if the gas station does not exist we create it
@@ -100,7 +100,7 @@ if __name__ == '__main__' :
             prix_nom = fields['prix_nom']
             prix_valeur = fields['prix_valeur']
         except:
-            prix_nom = "Nous disposons pas d'information"
+            prix_nom = "Nous ne disposons pas d'information"
             prix_valeur = None
         gas_station = GasStation(fields['adresse'], fields['cp'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur)], dist_from_loc=fields['dist'])
         #if the gas station does not exist we create it
