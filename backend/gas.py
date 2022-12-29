@@ -1,4 +1,7 @@
 import requests
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+import json
 import pandas as pd
 from dataclasses import dataclass
 from typing import List
@@ -92,36 +95,35 @@ def generate_gas_stations(data):
             gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur'], fields['prix_maj']))
     return gas_stations
 
-if __name__ == '__main__' :
-    
-    # create a driver that connects to the API
-    driver = GasDriver()
+class average_price_plot:
+    def __init__(self) -> None:
+        self.url = 'https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie'
+ 
+    def query(self, filters=None):
+        query = self.url + '&q=&rows=10000&facet=prix_maj&facet=prix_nom&facet=prix_valeur'
+        if filters is not None:
+            for f in filters :
+                query += '&refine.%s'%f
+        r = requests.get(query)
+        res = r.json()
+        final = json.dumps(res)
+        return final
 
-    #get raw data
-    data = driver.get_data(facets=['id', 'geom', 'prix_nom'], filters=[], automates=[], distance_from_point=("48.8693548", "2.3450405", "1000000")) #renvoie la dernière màj du prix de chaque type de carburant pour toutes les stations de Paris et à une distance inférieure à 10km
-
-    #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
-    print(len(data))
-    gas_stations = []
-    for r in data:
-        fields = r['fields']
-        #some values can be missing
-        try:
-            prix_nom = fields['prix_nom']
-            prix_valeur = fields['prix_valeur']
-            prix_maj = fields['prix_maj']
-        except:
-            prix_nom = "Nous ne disposons pas d'information"
-            prix_valeur = None
-            prix_maj = None
-        gas_station = GasStation(fields['adresse'], fields['cp'], fields['horaires_automate_24_24'], Point(float(fields['geom'][0]), float(fields['geom'][1])), fuels=[Gas(prix_nom, prix_valeur, prix_maj)], dist_from_loc=fields['dist'])
-        #if the gas station does not exist we create it
-        if  gas_station not in gas_stations:
-            gas_stations.append(gas_station)
-        #else we had a Gas object to the GasStation.fuels variable
-        else : 
-            id = [i for i,x in enumerate(gas_stations) if x == gas_station][0]
-            gas_stations[id].fuels.append(Gas(fields['prix_nom'], fields['prix_valeur'], fields['prix_maj']))
-
-
-    print(len(gas_stations))
+class ReverseGeo:
+    def __init__(self) -> None:
+        self.url = 'https://api.bigdatacloud.net/data/reverse-geocode-client?'
+        
+    def query(self, location=None):
+        query = self.url
+        if location is not None:
+            query += 'latitude=' + str(location[0]) + '&longitude=' + str(location[1]) +'&localityLanguage=fr'  
+        
+        session = requests.Session()
+        retry = Retry(connect=5, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        r = session.get(query)
+        final = r.json()
+        geoloc = pd.DataFrame.from_dict(final, orient='columns')
+        return geoloc['city'].iloc[0]

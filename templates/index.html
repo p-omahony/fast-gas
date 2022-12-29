@@ -16,13 +16,19 @@ crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
 crossorigin=""></script>
+<script type="text/javascript" src={{jss | safe}}></script>
+<script type="text/javascript" src={{widget | safe}}></script>
 </head>
+<header>
+    {{script1 |safe }}
+</header>
 <body>
 
 <div id="content">
     <!-- we create the left side bar -->
     <div id="sidebar">
         <!-- we create the form -->
+        <div id ='plot'>{{div1 | safe}}</div>
         <form method="POST">
             <!-- gas select -->
             <select name='gas[]' multiple="yes" class="form-select" aria-label="multiple select example">
