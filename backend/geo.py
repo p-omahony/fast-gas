@@ -10,9 +10,13 @@ def get_address_from_coords(coords: tuple):
     location = driver.reverse(coords)
     return location.address, (location.latitude, location.longitude)
 
-def create_gmaps_link(coords: tuple):
-    address = get_address_from_coords(coords)[0]
-    return "https://maps.google.com/maps/dir//{}".format(address).replace(' ','+')
+def create_gmaps_link(coords_start: tuple, coords_finish: tuple):
+    address_start = get_address_from_coords(coords_start)[0]
+    address_finish = get_address_from_coords(coords_finish)[0]
+    link_1 = "https://maps.google.com/maps/dir/{}".format(address_start).replace(' ','+')
+    link_2 = link_1 + "/{}".format(address_finish).replace(' ','+')
+    return link_2
+    #return "https://maps.google.com/maps/dir//{}".format(address).replace(' ','+')
 
 
 if __name__ == '__main__':

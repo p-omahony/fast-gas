@@ -26,7 +26,7 @@ def root():
          marker = {
             'lat': location[0],
             'lon': location[1],
-            'popup': 'Adresse entrée',
+            'popup': 'Adresse renseignée',
             'color': 'violet'
          }
          markers.append(marker)
@@ -65,7 +65,7 @@ def root():
                   #best_gs = gs
                
       for gs in gas_stations :
-         gmaps_link = create_gmaps_link((gs.coords.latitude, gs.coords.longitude))
+         gmaps_link = create_gmaps_link((latitude, longitude),(gs.coords.latitude, gs.coords.longitude))
          print(gmaps_link)
          marker = {
             'lat': gs.coords.latitude,
@@ -77,7 +77,7 @@ def root():
             marker['color'] = 'green'
          elif gs == closest_gs:
             marker['color'] = 'yellow'
-         if gs == best_gs:
+         elif gs == best_gs:
             marker['color'] = 'orange'
          else:
             marker['color'] = 'blue'
