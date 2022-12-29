@@ -16,7 +16,7 @@ class GasDriver:
             - facets: list -> list of the features we want to aggregate the results (equivalent og GROUP BY in SQL)
             - filters: list -> list of the filters we want to apply to our query
             - distance_from_point:tuple -> (latitude: string, longitude: string, distance: float) to get data within the 'distance' from point ('latitude', 'longitude')
-            - automates -> yes and/or no for presence of automates in the gas station (another set of filters)
+            - automates -> yes and/or no (list) for presence of automates in the gas station (another set of filters)
         """
         query = self.url + '&q='
         if len(facets)!=0:
