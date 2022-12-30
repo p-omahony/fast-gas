@@ -22,6 +22,7 @@ html, body {
 #plot{
     height: 20%;
     overflow: visible;
+    color:#9b9898;
 }
 
 #sidebar{
@@ -33,10 +34,10 @@ html, body {
     position: relative;
 }
 form{
-    width: 90%;
+    width: 80%;
     position: relative;
     left: 50%;
-    top: 60%;
+    top: 52%;
     transform: translate(-50%,-50%);
 }
 
