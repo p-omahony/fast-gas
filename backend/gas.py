@@ -101,7 +101,7 @@ class average_price_plot:
         self.url = 'https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie'
  
     def query(self, filters=None):
-        query = self.url + '&q=&rows=100&facet=prix_maj&facet=prix_nom&facet=prix_valeur'
+        query = self.url + '&q=&rows=1000&facet=prix_maj&facet=prix_nom&facet=prix_valeur'
         if filters is not None:
             for f in filters :
                 query += '&refine.%s'%f
