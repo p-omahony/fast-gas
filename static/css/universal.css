@@ -2,6 +2,7 @@ body {
     padding: 0;
     margin: 0;
 }
+
 html, body {
     height: 100%;
     width: 100vw;
@@ -17,19 +18,26 @@ html, body {
     height: 100%;
     width: 80%;
 }
+
+#plot{
+    height: 20%;
+    overflow: visible;
+    color:#9b9898;
+}
+
 #sidebar{
     height: 100%;
-    width: 20%;
+    width: 30%;
     justify-content: center;
     align-items: center;
     background-color: #303030;
     position: relative;
 }
 form{
-    width: 90%;
-    position: absolute;
+    width: 80%;
+    position: relative;
     left: 50%;
-    top: 50%;
+    margin-top: 28em;
     transform: translate(-50%,-50%);
 }
 

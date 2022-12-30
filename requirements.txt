@@ -3,4 +3,5 @@ pandas
 requests
 flask
 geopy
-random
+bokeh
+pytest
