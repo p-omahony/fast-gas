@@ -6,5 +6,5 @@ To run :
 
 ## Run with Docker
 At the root of the project:   
-- build the image: `docker built -t fast-gas:latest .`    
+- build the image: `docker build -t fast-gas:latest .`    
 - run with logs displayed: `docker run -it -p 8080:8080 fast-gas` / or run in background `docker run -d -p 8080:8080 fast-gas`  

@@ -26,7 +26,7 @@ app=Flask(__name__)
 @app.route('/', methods=('GET', 'POST'))
 def root():
 
-      ###############################################################
+   ###############################################################
    # 1. Get all the data we need to build our interactive plot   #
    ###############################################################
 
@@ -52,55 +52,55 @@ def root():
    df1 = pd.pivot_table(df,
                      values = 'Prix',
                      index = ['Date'],
-                  columns = ['Carburant']
-                     ,aggfunc=np.mean)
+                  columns = ['Carburant'],
+                     aggfunc=np.mean)
 
-   df1 = df1.reset_index()
+   df2 = df1.reset_index()
 
    #######################################
    # 2. Predictions over the next 5 days #
    #######################################
 
    #We use the pdm library to perform a time series prediction of the average gas price for the next 5 days
-   gas = ['SP95', 'SP98', 'E85','Gazole','GPLc','E10']
-   J = [(date.today() + timedelta(days = i+1)).strftime("%Y-%m-%d") for i in range(5)]
+   #gas = ['SP95', 'SP98', 'E85','Gazole','GPLc','E10']
+   #J = [(date.today() + timedelta(days = i+1)).strftime("%Y-%m-%d") for i in range(5)]
 
 
 
    # We remove the NAN values for each type of gas (which can be very different)
-   no_nan = [df1[['Date', i]].dropna() for i in gas]
+   #no_nan = [df1[['Date', i]].dropna() for i in gas]
 
    # We obtain the ARMA(p,d,q) parameters for each gas
-   parameters = [auto_arima(no_nan[count][value], suppress_warnings = True, seasonal = True, m = 1).get_params().get("order") for count, value in enumerate(gas)]
+   #parameters = [auto_arima(no_nan[count][value], suppress_warnings = True, seasonal = True, m = 1).get_params().get("order") for count, value in enumerate(gas)]
 
    # We fit each ARMA model on the training value (for simplicity, training values macth the historical data for each gas type)
-   models = [ARIMA(endog = no_nan[count][value], order = parameters[count]).fit() for count, value in enumerate(gas)]
+   #models = [ARIMA(endog = no_nan[count][value], order = parameters[count]).fit() for count, value in enumerate(gas)]
 
-   start, end = len(df), len(df) + 5
-   forecast = [models[i].predict(start = start , end =  end) for i in range(len(models))]
-   predictions = pd.DataFrame(0, index = np.arange(len(J)), columns = ['Date'] + gas)
+   #start, end = len(df), len(df) + 5
+   #forecast = [models[i].predict(start = start , end =  end) for i in range(len(models))]
+   #predictions = pd.DataFrame(0, index = np.arange(len(J)), columns = ['Date'] + gas)
 
    #We store the day+5 predictions into a dataframe, with the corresponding dates
-   for count, value in enumerate(J):
-      predictions['Date'].iloc[-count -1] = J[-count-1]
+   #for count, value in enumerate(J):
+      #predictions['Date'].iloc[-count -1] = J[-count-1]
 
-   for i in range(len(gas)):
-      for j in range(len(J)):
-         h = pd.DataFrame(forecast[i])
-         predictions.iloc[j, i+1] = h.iloc[-j+5]
+   #for i in range(len(gas)):
+      #for j in range(len(J)):
+         #h = pd.DataFrame(forecast[i])
+         #predictions.iloc[j, i+1] = h.iloc[-j+5]
 
    #Reduces vizulization (and prediction base) to the past 8 weeks
-   df1 = df1[df1['Date'] > str(date.today() - timedelta(weeks= 8))]
+   #df1 = df1[df1['Date'] > str(date.today() - timedelta(weeks= 8))]
 
    #We eventually merge the historical data as well as the forecasted ones, which will be used as our database for plotting
-   df1['Category'] = 'Historique'
-   predictions['Category'] = 'Prévision'
-   df2 = pd.concat([df1, predictions])
+   #df1['Category'] = 'Historique'
+   #predictions['Category'] = 'Prévision'
+   #df2 = pd.concat([df1, predictions])
 
    #######################################
    #       3. Datavizualization tool     #
    #######################################
-
+   df2 = df2[df2['Date'] > str(date.today() - timedelta(weeks= 8))]
    source = ColumnDataSource(df2)
 
    plot = figure(width = 600,
@@ -126,29 +126,31 @@ def root():
                                  ('Prix moyen', '$y')],
                         formatters = {'@Date': 'datetime'}))
 
-   gas = ['SP95', 'SP98', 'E85','Gazole','GPLc','E10']
+   gas = ['SP98','SP95','Gazole','E10','E85','GPLc']
 
-   index_cmap = factor_cmap('Category', palette = ['#4292c6', '#EE6677'], 
-                        factors = sorted(df2.Category.unique()))
+   #index_cmap = factor_cmap('Category', palette = ['#4292c6', '#EE6677'], 
+                        #factors = sorted(df2.Category.unique()))
 
    circle = plot.circle(x = "Date", y = "SP95", 
-                  legend_field = 'Category',
-                  line_color = index_cmap,
-                  fill_color = index_cmap,
-                  source = source,
-                        size = 15,
-                        fill_alpha=0.4,
-                        hover_color='limegreen')
+                     line_color = '#4292c6',
+                     fill_color = '#4292c6',
+                     source = source,
+                         size = 15,
+                         fill_alpha=0.4,
+                         hover_color='red',
+                        legend_label = 'SP95')
 
    # Creates a dropdown menu to select the desired gas type, and then update the underlying data selection
    dropdown = Dropdown(label="Choisissez votre carburant", menu = gas, button_type = 'primary')
 
    code = """
-   let s = source.data
-   s["SP95"] = s[this.item]
-   plot.title.text = 'Prix journalier moyen - ' + this.item 
-   plot.change.emit()
-   source.change.emit();
+      let s = source.data
+      s["SP95"] = s[this.item]
+      plot.title.text = 'Prix journalier moyen - ' + this.item 
+      legend.change.emit()
+      legend.label.value = this.item
+      plot.change.emit()
+      source.change.emit();
    """
 
    dropdown.js_on_event("menu_item_click", CustomJS(args=dict(source=source, plot = plot, legend = plot.legend.items[0]), code=code))
@@ -157,18 +159,18 @@ def root():
    startdate, enddate =df2['Date'].iat[0] , df2['Date'].iat[-1]
 
    date_range_slider = DateRangeSlider(
-   title="Date", start=startdate, end=enddate,
-   value=(startdate, enddate), step=1, width=300)
+      title="Date", start=startdate, end=enddate,
+      value=(startdate, enddate), step=1, width=300)
 
    callback = CustomJS(args=dict(plot = plot), code="""
-   plot.x_range.start = cb_obj.value[0]
-   plot.x_range.end = cb_obj.value[1]
-   plot.x_range.change.emit()
-   """)
+      plot.x_range.start = cb_obj.value[0]
+      plot.x_range.end = cb_obj.value[1]
+      plot.x_range.change.emit()
+      """)
    date_range_slider.js_on_change('value', callback)
 
    layout = column(children = [plot, dropdown, date_range_slider], sizing_mode = "stretch_width")
-#     show(layout)
+   #show(layout)
    script1, div1 = components(layout)
    jss= CDN.js_files[0]
    widget = CDN.js_files[2]
@@ -243,7 +245,7 @@ def root():
             'popup': ', '.join([f.name + ': ' + str(f.prix) + 'euros ' + '(as of ' + str(f.maj)[:10] + ')' for f in gs.fuels]) + ', Automate 24-24: ' + gs.horaires_automate_24_24,
             'maps_link': gmaps_link
          }
-         if gs == cheaper_gs: #if a marker doesn't appear, it is because it is combined with another one (the order of the if conditions maters!)
+         if gs == cheaper_gs: #if a marker doesn't appear, it is because it has been combined with another one (the order of the if conditions maters!)
             marker['color'] = 'green'
          elif gs == closest_gs:
             marker['color'] = 'yellow'

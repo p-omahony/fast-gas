@@ -16,8 +16,6 @@ def create_gmaps_link(coords_start: tuple, coords_finish: tuple):
     link_1 = "https://maps.google.com/maps/dir/{}".format(address_start).replace(' ','+')
     link_2 = link_1 + "/{}".format(address_finish).replace(' ','+')
     return link_2
-    #return "https://maps.google.com/maps/dir//{}".format(address).replace(' ','+')
-
 
 if __name__ == '__main__':
     print(get_coords_from_address('23 rue des Jeuneurs, 75002'))
