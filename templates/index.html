@@ -16,38 +16,39 @@ crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
 crossorigin=""></script>
+<script type="text/javascript" src={{jss | safe}}></script>
+<script type="text/javascript" src={{widget | safe}}></script>
 </head>
+<header>
+    {{script1 |safe }}
+</header>
 <body>
 
 <div id="content">
     <!-- we create the left side bar -->
     <div id="sidebar">
         <!-- we create the form -->
+        <div id ='plot'>{{div1 | safe}}</div>
         <form method="POST">
             <!-- gas select -->
-            <select name='gas' class="form-select" aria-label="Default select example">
+            <select name='gas[]' multiple="yes" class="form-select" aria-label="multiple select example">
                 <option value=none selected>Carburant</option>
                 <option value="SP98">SP98</option>
                 <option value="SP95">SP95</option>
                 <option value="Gazole">Gazole</option>
+                <option value="E10">E10</option>
+                <option value="E85">E85</option>
+                <option value="GPLc">GPLc</option>
             </select>
-            <!-- car model select -->
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Véhicule</button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div role="separator" class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </div>
-                <input name="car" type="text" class="form-control" aria-label="Text input with dropdown button">
-            </div>
+            <!-- automate 24-24 : oui/non -->
+            <select name='automate' class = "form-select">
+                <option value=none selected> Presence automate</option>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+            </select>
             <!-- distance select  -->
-            <label id="range_label" for="customRange3" class="form-label">Distance maximale: 50</label>
-            <input name="distance" type="range" id="range" class="form-range" min="0" max="100" default="50" step="1" id="customRange3" oninput="updateRangeLabel(this.value)">
+            <label id="range_label" for="customRange3" class="form-label">Distance maximale: 25</label>
+            <input name="distance" type="range" id="range" class="form-range" min="0" max="50" default="25" step="1" id="customRange3" oninput="updateRangeLabel(this.value)">
             <select onchange="updateLocationType(this.value)" class="form-select" aria-label="Default select example">
                 <option value="current" selected>Utiliser ma localisation</option>
                 <option value="address">Entrer une autre adresse</option>

@@ -3,3 +3,5 @@ pandas
 requests
 flask
 geopy
+bokeh
+pmdarima
