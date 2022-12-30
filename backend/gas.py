@@ -35,6 +35,7 @@ class GasDriver:
         query += '&rows=100'
         r = requests.get(query)
         res = r.json()
+        assert res['records'] is not None
         return res['records']
 
 
@@ -71,7 +72,7 @@ class GasStation:
         return self.coords == __o.coords
 
 
-def generate_gas_stations(data):
+def generate_gas_stations(data) -> list:
     #put all raw data we need into GasStation object (we want to plot the GasStarion objects on the map so we need to get all needed info)
     gas_stations = []
     for r in data:
@@ -100,7 +101,7 @@ class average_price_plot:
         self.url = 'https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie'
  
     def query(self, filters=None):
-        query = self.url + '&q=&rows=10000&facet=prix_maj&facet=prix_nom&facet=prix_valeur'
+        query = self.url + '&q=&rows=100&facet=prix_maj&facet=prix_nom&facet=prix_valeur'
         if filters is not None:
             for f in filters :
                 query += '&refine.%s'%f
@@ -113,7 +114,7 @@ class ReverseGeo:
     def __init__(self) -> None:
         self.url = 'https://api.bigdatacloud.net/data/reverse-geocode-client?'
         
-    def query(self, location=None):
+    def query(self, location=None) -> str:
         query = self.url
         if location is not None:
             query += 'latitude=' + str(location[0]) + '&longitude=' + str(location[1]) +'&localityLanguage=fr'  

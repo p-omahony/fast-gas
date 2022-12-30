@@ -37,7 +37,7 @@ form{
     width: 80%;
     position: relative;
     left: 50%;
-    top: 52%;
+    margin-top: 28em;
     transform: translate(-50%,-50%);
 }
 

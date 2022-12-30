@@ -17,9 +17,6 @@ from bokeh.embed import components
 from bokeh.resources import CDN
 from datetime import date, timedelta
 from bokeh.transform import factor_cmap
-from pmdarima import auto_arima
-from statsmodels.tsa.arima.model import ARIMA
-import warnings  
 
 app=Flask(__name__)
 
@@ -229,7 +226,6 @@ def root():
                
       for gs in gas_stations :
          gmaps_link = create_gmaps_link((latitude, longitude),(gs.coords.latitude, gs.coords.longitude))
-         print(gmaps_link)
          marker = {
             'lat': gs.coords.latitude,
             'lon': gs.coords.longitude,
