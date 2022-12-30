@@ -160,7 +160,6 @@ def root():
    plot.title.align = 'center'
    plot.yaxis[0].formatter = PrintfTickFormatter(format = '€ %0.2f')
    plot.xaxis[0].formatter = DatetimeTickFormatter(days = ["%d-%b"], months = ['%d-%b'])
-
    layout = column(children = [plot, dropdown, date_range_slider], sizing_mode = "stretch_width")
    script1, div1 = components(layout)
    jss= CDN.js_files[0]
