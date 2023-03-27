@@ -1,4 +1,8 @@
-# fast-gas  
+# fast-gas
+Small project connecting to the French government api allowing to have the real time prices of gasoline displayed interactively on a map. This project allows a follow-up of the evolution of the fuel prices as well as an efficient way to compare different gas stations around you.    
+
+This project is part of the 'Cloud computing' course at ENSAE - IP Paris.    
+
 To run :   
 - have python>=3.8 installed    
 - create a virtual environment and activate it: `virtualenv env` then `source env/bin/activate`     
